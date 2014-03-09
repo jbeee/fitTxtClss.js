@@ -1,4 +1,3 @@
-
 fix width vars with new opts.params
 add width multiline/singleline functionality
 add scroll functionality.
