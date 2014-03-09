@@ -1,13 +1,3 @@
-         
-         
-         
-                          o  o
-     _                     \ |
-  o |_)  _   _    o      (. . )
-  | |_) (/_ (/_ . | ()    {==}3
- (|  http://jbee.io      
- 		Y                              
-               
 Copyright (c) 2014 ICRL 
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
