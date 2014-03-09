@@ -8,9 +8,10 @@ $.fn.rspTxt = function(options){ //hw,minF,maxF,fbScrll,innrEl,compR
  var defaults = {
       resizebyWidth: false,
       widthCompRatio: 1.5,
-      innerTag:'span',     
+      innerTag:'p',     
       minSize:'10px',
-      maxSize:'50px'
+      maxSize:'50px',
+      throttleTime: 500
       /* todo: add this functionality ,
 	  maxWidth:false,
       maxHeight:false,
@@ -42,15 +43,15 @@ $.fn.rspTxt = function(options){ //hw,minF,maxF,fbScrll,innrEl,compR
 			 }
   		  });
     
-
-if(hw==0){ newSize(adjustHeight($lngInnrEl));}
+alert(lngInnrPx);
+if(hw==0){ newSize(adjustHeight());}
 else{$activeClass.css('white-space','nowrap'); adjustWidth();}
 
 
 
 
 //////////////////// adjust height
-function adjustHeight($lngInnrEl)
+function adjustHeight()
 {
 	var cHt = $activeClass.height(); 
 	var lngInnrFS = $lngInnrEl.css('font-size').replace("px","");	
@@ -98,26 +99,23 @@ function adjustWidth()
 	if(ltSpace != 0){ ltSpace = ltSpace.replace("px","");}
 	
 	
-	var	newFont = Math.floor((cWth - (numWS*wdSpace)-(numL*ltSpace))/((numL*compR)+(numWS*0.5)));
-	$activeClass.css('font-size',newFont+'px');
+	var	newFont = Math.floor((cWth - (numWS*wdSpace)-(numL*ltSpace))/((numL*opts.widthCompRatio)+(numWS*0.5)));
+	return newFont;
 }
 
 //////////////////////////// Check if beyond set min/max
-function newSize(cSize)
+function newSize(nSize)
 {
 
-if(cSize >= opts.maxSize){
-	$activeClass.css('font-size', opts.maxSize+'px' + (cSize >= opts.maxSize));	
-	$lngInnrEl.css('font-size',opts.maxSize+'px')
+if(nSize >= opts.maxSize){
+	nSize = opts.maxSize;
 }
-else if(cSize <= opts.minSize){
+else if(nSize <= opts.minSize){
+	nSize = opts.minSize
+}
+	$activeClass.css('font-size',nSize+'px');
+	 $lngInnrEl.css('font-size',nSize+'px');
 
-	$activeClass.css('font-size',opts.minSize+'px');
-	$lngInnrEl.css('font-size',opts.minSize+'px')
-}
-else{
-	$activeClass.css('font-size',$lngInnrEl.css('font-size'));
-}
 
 }
 
@@ -127,7 +125,7 @@ var rspTBusy = false; var throttleRspTxtTimer;
 function throttleRspTxt()
 {if(rspTBusy){return;}
 	else{clearTimeout(throttleRspTxtTimer);throttleRspTxtTimer = false;rspTBusy = true;
-	throttleRspTxtTimer = setTimeout(execRspTxtResize,500);}
+	throttleRspTxtTimer = setTimeout(execRspTxtResize,opts.throttleTime);}
 }
 
 function execRspTxtResize()
