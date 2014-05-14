@@ -1,6 +1,0 @@
-fix width vars with new opts.params
-add width multiline/singleline functionality
-add scroll functionality.
-add max/min height/width functionality?
-test in ie6/7/8
-make readme
