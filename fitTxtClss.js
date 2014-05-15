@@ -1,10 +1,5 @@
 /*
  fitTxtClss.js 
- From http://jbee.io/demos/fitTxtClss/ 
- Copyright (c) 2013 ICRL 
-*/
-/*
- fitTxtClss.js 
  From http://jbee.io/demos/fitTxtClss  
  Copyright (c) 2013 ICRL 
 */
