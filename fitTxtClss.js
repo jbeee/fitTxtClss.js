@@ -1,6 +1,6 @@
 /*
- fitTheClass.js 
- From http://demo.jbee.io/fitTheClass  
+ fitTxtClss.js 
+ From http://jbee.io/demos/fitTxtClss/ 
  Copyright (c) 2013 ICRL 
 */
 /*
