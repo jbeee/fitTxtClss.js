@@ -1,8 +1,8 @@
-fitTheTxtClss.js
+fitTxtClss.js
 =============
-
-jQuery widget designed to make an entire group of text containers responsive.
-see the demo: http://codepen.io/jbeeio/pen/cJano
+### responsive, uniform blocks of text
+A widget inspired by fitText.js designed to make an entire group of text containers responsive.
+see the demo: http://jbee.io/demos/fitTxtClss/
 
 If one textblock becomes to large to fit in it's containter, all textblocks will be reduced in font-size.
 This ensures that no matter what input is recieved, the layout will remain contained and uniform.
