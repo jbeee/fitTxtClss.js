@@ -17,10 +17,10 @@ and by width (single line -- using a method similar to fitText.js)
 
 
 ###the algorithm: 
-- find the longest text block in the class.
-- check if block fits
-	TRUE: check if it could fit a little more
-	FALSE: if block doesn't fit, reduce size and try again
+		find the largest element in the class (whether by height or string length).
+		check if block fits
+			TRUE: check if it could fit a little more (flag to prevent infinite loop)
+			FALSE: reduce size and try again  (flag to prevent infinite loop)
 
 TODO
 =====
