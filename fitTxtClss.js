@@ -3,68 +3,91 @@
  From http://demo.jbee.io/fitTheClass  
  Copyright (c) 2013 ICRL 
 */
+/*
+ fitTxtClss.js 
+ From http://jbee.io/demos/fitTxtClss  
+ Copyright (c) 2013 ICRL 
+*/
 
-$.fn.fitTxtClss = function(options){ //hw,minF,maxF,fbScrll,innrEl,compR
+$.fn.fitTxtClss = function(options){ //$activeClass.hw,minF,maxF,fbScrll,innrEl,compR
  var defaults = {
-      resizebyWidth: false,      
-      widthCompRatio: 1.5,
-      innerTag:'p',     
-      minSize:'10px',
-      maxSize:'50px',
-      throttleTime: 500
-      /* todo: add this functionality ,
-      resizebyWidthML: false,
-	  maxWidth:false,
-      maxHeight:false,
-      minHeight:false,
-      minWidth:false,     
-      addScroll:false 
-      */
-      
+      resizeBy: 0,          //// 0 == height, 1 == widthSL, 2 == widthML;   
+      widthCompRatio: 1.5,  //// neccessary for stretch by width, change if font sizes are off a little
+      innerTag:false,       //// false if none, else tag name: li,p,span etc.
+      minSize:10,			//// can be in the form 10 or 10px, but can only be done with pixels
+      maxSize:30,		  	//// 			theres no jQuery support for rems/ems/% unfortunately
+      throttleTime: 500,  //// how often is resize aknowledged
+      addScroll:false     //// false = doesn't add scroll, 500 == adds scroll when parent el is smaller than 500 px   
     };
-     var opts = $.extend(defaults, options);
-     var hw = opts.resizebyWidth ? 1 : 0;
-     opts.minSize = parseInt(opts.minSize.replace("px",""));  opts.maxSize = parseInt(opts.maxSize.replace("px",""));
-  	 
-	 var $activeClass = this; 
-	 var $lngInnrEl;
-	 var lngInnrPx = 0;
-     var defaultWrap = $activeClass.css('white-space');
-	 var $nEl; var nPx;
-	 this.each(function(){ 	 	
-	 if(opts.innerTag == false){$nEl = $(this)}else{$nEl = $(this).find(opts.innerTag);}   
-			 if(hw==0){
-			  nPx = $nEl.height();
-			 if(nPx>lngInnrPx){	$lngInnrEl = $nEl;lngInnrPx = nPx;}  
+
+    var aClass = this; 
+    aClass.opts = $.extend(defaults, options);
+    aClass.opts.addScroll = cleanDimsString(aClass.opts.addScroll);  
+    aClass.opts.maxSize = cleanDimsString(aClass.opts.maxSize); 
+    aClass.opts.minSize = cleanDimsString(aClass.opts.minSize);  
+
+    aClass.lngInnrEl;
+	aClass.defaultWrap = $(aClass).css('white-space');
+	aClass.lngInnrPx = 0;
+	aClass.init = function()	///// get the longest/widest element of the group, and get its pixel length
+	{
+		var nEl; var nPx;
+		
+		$(aClass).each(function(){ 
+	 	if(aClass.opts.innerTag == false){nEl=this}else{nEl = $(aClass).find(aClass.opts.innerTag);}   
+			 if(aClass.opts.resizeBy==0){
+				  nPx = $(nEl).height();
+				 if( nPx > aClass.lngInnrPx)
+				 	{	 
+				 		aClass.lngInnrEl = nEl;
+				 		aClass.lngInnrPx = nPx;
+				 	}  
 			 }
 			 else
 			 {
-				nPx = $nEl.html().length;
-				if(nPx>lngInnrPx){$lngInnrEl = $nEl;lngInnrPx = nPx;}				 
+				nPx = $(nEl).html().length;
+				if(nPx > aClass.lngInnrPx)
+					{
+					 aClass.lngInnrEl = nEl; 
+					 aClass.lngInnrPx = nPx;  //// has char num rather than width for horizontal
+					}				 
 			 }
   		  });
-    
-if(hw==0){ newSize(byHeight());}
-else{$activeClass.css('white-space','nowrap'); byWidthSL();}
 
+		if(aClass.opts.resizeBy ==1)
+		{
+			var totalWidth = $(aClass.lngInnrEl).width();		
+			var numWhiteSpace = $(aClass.lngInnrEl).html().split(/\s/).length - 1;	  ///returns # of all whitespace chars
+			var wordSpace = cleanDimsString($(aClass.lngInnrEl).css('word-spacing'));  ///returns wordsSpacing
+			var letterSpace = cleanDimsString($(aClass.lngInnrEl).css('letter-spacing')); ///returns letterSpacing	
+			var currentFontSize = cleanDimsString($(aClass.lngInnrEl).css('font-size'));
 
+			aClass.letterWidthRatio = (totalWidth/aClass.lngInnrPx)/currentFontSize;
+				
+		
 
+			//var numL = aClass.lngInnrPx - numWS; 
+			//var idFS = aClass.lngInnrPx;	
+			//var numL =  aClass.lngInnrPx - numWS;
+		}
+		
 
-//////////////////////////////////////// adjust font size based on height 
-////////////// works with multiple or single lines
-function byHeight()
+	} 
+
+		
+
+aClass.byHeight = function()
 {
-	var cHt = $activeClass.height(); 
-	var lngInnrFS = $lngInnrEl.css('font-size').replace("px","");	
+	var cHt = $(aClass).height(); 
+	var lngInnrFS = $(aClass.lngInnrEl).css('font-size').replace("px","");	
 	var bestFit = false;
 	var cSize = lngInnrFS;
-
 			
-			while((cHt <= $lngInnrEl.height())&&(!bestFit))
+			while(((cHt-10) <= $(aClass.lngInnrEl).height())&&(!bestFit))
 			{				
 				lngInnrFS--;
-				$lngInnrEl.css('font-size',lngInnrFS+'px');
-				if((cHt-50) > $lngInnrEl.height())
+				$(aClass.lngInnrEl).css('font-size',lngInnrFS+'px');
+				if(cHt > $(aClass.lngInnrEl).height())
 				{
 					cSize=lngInnrFS;
 					bestFit=true;
@@ -72,14 +95,14 @@ function byHeight()
 				}			
 			}
 
-			while((cHt > $lngInnrEl.height())&&(!bestFit))
+			while((cHt > $(aClass.lngInnrEl).height())&&(!bestFit))
 			{								
 				lngInnrFS++;
-				$lngInnrEl.css('font-size',lngInnrFS+'px');
-				if((cHt-50) < ($lngInnrEl.height()))
-				{
-					cSize =lngInnrFS;
-					lngInnrFS--;				
+				$(aClass.lngInnrEl).css('font-size',lngInnrFS+'px');
+				if((cHt-10) < ($(aClass.lngInnrEl).height()))
+				{					
+					lngInnrFS--;
+					cSize =lngInnrFS;				
 					bestFit=true;
 					break;
 				}				
@@ -88,60 +111,121 @@ function byHeight()
    return cSize;			
 	
 }
+
 ////////////////////////////// Adjusts font size of single line based on width
-function byWidthSL() 
+aClass.byWidthSL = function() 
 {
-	var cWth = $activeClass.width();	
-	var idFS = lngInnrPx;
-	var numWS = $lngInnrEl.html().split(/\s/).length - 1;	
-	var numL = lngInnrPx - numWS;
-	var wdSpace = $lngInnrEl.css('word-spacing').replace("px","");
-	var ltSpace = $lngInnrEl.css('letter-spacing');
-	if(ltSpace != 0){ ltSpace = ltSpace.replace("px","");}
-	
-	
-	var	newFont = Math.floor((cWth - (numWS*wdSpace)-(numL*ltSpace))/((numL*opts.widthCompRatio)+(numWS*0.5)));
-	return newFont;
+	var cWidth = $(aClass).width()-10; 
+	var lngInnrFS = $(aClass.lngInnrEl).css('font-size').replace("px","");	
+	var bestFit = false;
+	var cSize = lngInnrFS;
+			
+			while((cWidth <= $(aClass.lngInnrEl).width())&&(!bestFit))
+			{				
+				lngInnrFS--;
+				$(aClass.lngInnrEl).css('font-size',lngInnrFS+'px');
+				if(cWidth> $(aClass.lngInnrEl).width())
+				{
+					cSize=lngInnrFS;
+					bestFit=true;
+					break;
+				}			
+			}
+
+			while((cWidth > $(aClass.lngInnrEl).width())&&(!bestFit))
+			{								
+				lngInnrFS++;
+				$(aClass.lngInnrEl).css('font-size',lngInnrFS+'px');
+				if(cWidth < ($(aClass.lngInnrEl).width()))
+				{					
+					lngInnrFS--;
+					cSize =lngInnrFS;				
+					bestFit=true;
+					break;
+				}				
+			}
+	//return Math.floor((cWth - (numWS*wdSpace)-(numL*ltSpace))/((numL*aClass.opts.widthCompRatio)+(numWS*0.5)));
 }
 
-function byWidthML()
+////////////////////////////// Adjusts font size of multiple lines based on width
+aClass.byWidthML =  function() 
 {
 	
 }
-//////////////////////////// Checks if beyond set min/max font size and sets the text
-function newSize(nSize)
-{
 
-if(nSize >= opts.maxSize){
-	nSize = opts.maxSize;
+
+
+aClass.newFontSize = function()
+	{
+	  var nSize = aClass.opts.maxSize;	
+	  switch(aClass.opts.resizeBy)
+ 	   {
+ 	 	case 0:
+ 	 		nSize = aClass.byHeight();
+ 	 	break;
+ 	 	case 1:
+ 	 		$(aClass).css('white-space','nowrap');
+ 	 		nSize = aClass.byWidthSL();
+ 	 	break;
+ 	 	case 2:
+ 	 		//return aClass.byWidthML();
+ 	 	break;
+ 	 	}
+
+ 	 	////// check if mins/maxs haven't been exceeded
+	 	if(nSize >= aClass.opts.maxSize)
+	 	 {
+			nSize = aClass.opts.maxSize;
+		 }
+		else if(nSize <= aClass.opts.minSize)
+		 {
+			nSize = aClass.opts.minSize
+		 }
+
+		$(aClass).css('font-size', nSize+'px');
+		$(aClass.lngInnrEl).css('font-size',nSize+'px');  /// since its the testing element, it should be reset
+ 	} 
+
+
+ 	aClass.rspTBusy = false; 
+	aClass.throttlefitTxtClssTimer;
+	//////////////// fires on windows resize: throttles resize fxn to every $activeClass.opts.throttleTime milliseconds
+	$(window).resize(function(){throttlefitTxtClss();});
+	function throttlefitTxtClss()
+	{
+		if(aClass.rspTBusy){return;}
+	else{clearTimeout(aClass.throttlefitTxtClssTimer); aClass.throttlefitTxtClssTimer = false; aClass.rspTBusy = true;
+	aClass.throttlefitTxtClssTimer = setTimeout(execfitTxtClssResize,aClass.opts.throttleTime);}
 }
-else if(nSize <= opts.minSize){
-	nSize = opts.minSize
-}
-	$activeClass.css('font-size',nSize+'px');
-	 $lngInnrEl.css('font-size',nSize+'px');
 
-
-}
-
-//////////////// fires on windows resize: throttles resize fxn to every opts.throttleTime milliseconds
-$(window).resize(function(){throttlefitTxtClss();});
-var rspTBusy = false; var throttlefitTxtClssTimer;
-function throttlefitTxtClss()
-{if(rspTBusy){return;}
-	else{clearTimeout(throttlefitTxtClssTimer);throttlefitTxtClssTimer = false;rspTBusy = true;
-	throttlefitTxtClssTimer = setTimeout(execfitTxtClssResize,opts.throttleTime);}
-}
-
-function execfitTxtClssResize()
-{rspTBusy = false;
-if(hw==0){newSize(byHeight());}else{byWidth();}clearTimeout(throttlefitTxtClssTimer);
-throttlefitTxtClssTimer = false;
-}
-	  
+	function execfitTxtClssResize()
+	{
+		aClass.rspTBusy = false;
+			console.log('resize! '+ aClass.opts.resizeBy);
+		aClass.newFontSize();
+		clearTimeout(aClass.throttlefitTxtClssTimer);
+		aClass.throttlefitTxtClssTimer = false;
+	}
+		  	 
 
 
 
+	function cleanDimsString(val)
+	{
+		if(!val){return false};
+		
+		if(isNaN(val))
+			{
+				val = parseInt(val.replace("px",""));
+			}
+		return val;
+	}
+
+
+
+	///lets go!
+	aClass.init();
+	aClass.newFontSize();
 
 };
     
