@@ -22,6 +22,6 @@ TODO
 -fix width vars with new opts.params
 -add width multiline functionality
 -add scroll functionality.
--add max/min height/width functionality?
+-add max/min height/width functionality? (user-defined or derived from min/max font size?)
 -test in ie6/7/8
 
