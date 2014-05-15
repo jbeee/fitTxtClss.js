@@ -12,10 +12,10 @@
 $.fn.fitTxtClss = function(options){ //$activeClass.hw,minF,maxF,fbScrll,innrEl,compR
  var defaults = {
       resizeBy: 0,          //// 0 == height, 1 == widthSL, 2 == widthML;   
-      widthCompRatio: 1.5,  //// neccessary for stretch by width, change if font sizes are off a little
+      //widthCompRatio: 1.5,  //// from fitText algorithm, decided not to use it, but might be handy one day 
       innerTag:false,       //// false if none, else tag name: li,p,span etc.
       minSize:10,			//// can be in the form 10 or 10px, but can only be done with pixels
-      maxSize:30,		  	//// 			theres no jQuery support for rems/ems/% unfortunately
+      maxSize:100,		  	//// 			theres no jQuery support for rems/ems/% unfortunately
       throttleTime: 500,  //// how often is resize aknowledged
       addScroll:false     //// false = doesn't add scroll, 500 == adds scroll when parent el is smaller than 500 px   
     };
